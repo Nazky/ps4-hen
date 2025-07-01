@@ -40,7 +40,7 @@ all: $(TARGET)
 # Main build target
 $(TARGET): $(ODIR) $(OBJS)
 	@echo "Linking $(TARGET)..."
-	@$(CC) $(LIBPS4)/crt0.s $(ODIR)/*.o -o temp.t $(CFLAGS) $(LFLAGS) $(LIBS)
+	@$(CC) -fuse-ld=gold $(LIBPS4)/crt0.s $(ODIR)/*.o -o temp.t $(CFLAGS) $(LFLAGS) $(LIBS)
 	@$(OBJCOPY) -O binary temp.t $(TARGET)
 	@$(RM) -f temp.t
 	@echo "Build complete: $(TARGET)"

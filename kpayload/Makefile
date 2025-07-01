@@ -32,7 +32,7 @@ all: payload payload-include
 # Main build target
 payload: $(ODIR) $(OBJS)
 	@echo "Linking $(TARGET)..."
-	@$(CC) $(OBJS) -o temp.t $(CFLAGS) $(LFLAGS)
+	@$(CC) -fuse-ld=gold $(OBJS) -o temp.t $(CFLAGS) $(LFLAGS)
 	@$(OBJCOPY) -R .payload_bss temp.t temp.u
 	@$(OBJCOPY) -O binary temp.u $(TARGET)
 	@$(RM) -f temp.t temp.u

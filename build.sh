@@ -1,14 +1,43 @@
 #!/bin/bash
 set -e
 
-# Only update/install if running as root AND on Ubuntu
-# This is for the CI
-# On your system you shouldn't be running as root and should already have these installed
-if [ "$(id -u)" -eq 0 ] && grep -qi ubuntu /etc/os-release; then
-  apt-get update
-  apt-get install -y --no-install-recommends ca-certificates curl unzip xxd
+# Check if the script is run as root
+if [ "$(id -u)" -eq 0 ]; then
+  # Running as root: perform package installation only
+  if [ -f /etc/os-release ]; then
+    . /etc/os-release
+  else
+    echo "Cannot detect the distribution." >&2
+    exit 1
+  fi
+
+  PKGS="ca-certificates curl unzip xxd make gcc"  # build tools
+
+  echo "Installing packages as root..."
+  case "$ID" in
+    ubuntu|debian)
+      apt-get update
+      apt-get install -y --no-install-recommends $PKGS
+      ;;
+    fedora)
+      dnf install -y $PKGS
+      ;;
+    arch)
+      pacman -Sy --noconfirm $PKGS
+      ;;
+    *)
+      echo "Unsupported distribution: $ID" >&2
+      exit 1
+      ;;
+  esac
+  echo "Packages installed. Please run the script again as your user to build."
+  exit 0
 fi
 
+# If not root, run everything as the current user
+echo "Running build steps as user $(whoami)..."
+
+# Proceed with build process
 cd kpayload
 make clean
 make
@@ -55,3 +84,5 @@ cd ..
 
 rm -f hen.bin
 cp installer/installer.bin hen.bin
+
+echo "Build process completed."

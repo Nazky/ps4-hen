@@ -27,7 +27,7 @@
 
 ## Building
 
-Instructions provided are for Debian based systems. (Tested on Ubuntu)
+Instructions provided are for Linux systems. (Tested on Ubuntu/Debian, Arch and Fedora)
 
 Install [ps4-payload-sdk](https://github.com/Scene-Collective/ps4-payload-sdk):
 
@@ -40,6 +40,12 @@ Clone the repository:
 
 ```sh
 git clone https://github.com/Scene-Collective/ps4-hen.git
+```
+
+Install dependencies:
+
+```sh
+sudo ./build.sh
 ```
 
 Compile the payload:
